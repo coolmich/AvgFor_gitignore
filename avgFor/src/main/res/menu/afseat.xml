@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/add_class_btn"
+          android:icon="@drawable/add_class_icon"
+          android:title="@string/add_class"
+          android:showAsAction="ifRoom"/>
+    <item android:id="@+id/af_refresh_btn"
+          android:icon="@drawable/refresh_icon"
+          android:title="@string/refresh_seat"
+          android:showAsAction="ifRoom"/>
+    
+
+</menu>

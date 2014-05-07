@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:layout_width="match_parent"  
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >  
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/menu_seat_row"
+        android:text="@string/seats"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textColor="@color/gray_blue"
+        android:drawableTop="@drawable/seat_icon"
+        android:background="@drawable/menu_block_background"
+        android:padding="20dp" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/help"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textColor="@color/gray_blue"
+        android:drawableTop="@drawable/help_icon"
+        android:background="@drawable/menu_block_background"
+        android:padding="20dp" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/feedback"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textColor="@color/gray_blue"
+        android:drawableTop="@drawable/feedback_icon"
+        android:background="@drawable/menu_block_background"
+        android:padding="20dp" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:textColor="@color/gray_blue"
+        android:drawableTop="@drawable/log_out"
+        android:background="@drawable/menu_block_background"
+        android:padding="20dp" />
+      
+</LinearLayout>  
