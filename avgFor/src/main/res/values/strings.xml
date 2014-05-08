@@ -15,5 +15,9 @@
     <string name="seats">SEATS</string>
     <string name="help">HELP</string>
     <string name="feedback">FEEDBACK</string>
+    <string name="editT1">Username</string>
+    <string name="editT2">Password</string>
+    <string name="Signup">Sign up</string>
+    <string name="Signin">Sign in</string>
     
 </resources>

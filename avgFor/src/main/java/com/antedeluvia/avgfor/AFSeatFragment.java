@@ -37,7 +37,9 @@ public class AFSeatFragment extends ListFragment {
 	private String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
 	private AFSeatAdapter<AFSeat> mSeatAdapter;
 	// test with 301
-	private String userId = "22";
+    LoginSingleton loginuser = LoginSingleton.getInstance();
+	//private String userId = "22";
+    private String userId = loginuser.getUID();
 	public static final int EMPTYSEATLIST = 100;
 	private final String EMPTYTAG = "seat list is empty";
 

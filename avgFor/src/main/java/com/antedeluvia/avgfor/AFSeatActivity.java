@@ -15,16 +15,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class AFSeatActivity extends FragmentActivity {
 	public static SlidingMenu menu; 
 	public static final int INTERNETERR =  500;
-	private final String DIALOG = "dialog tag";
-    public static final int FORADDCLASS = 202;
-    private boolean classAdded = false;
-
+	private final String DIALOG = "dialog tag"; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,8 +104,7 @@ public class AFSeatActivity extends FragmentActivity {
 		case R.id.add_class_btn: 
 			System.err.println("plus clicked");
 			Intent i = new Intent(this, AFSubjectActivity.class);
-            i.putExtra("FromMainForAdd", 100);
-			startActivityForResult(i, FORADDCLASS);
+			startActivity(i);
 			return true;
 		case android.R.id.home:
 			AFSeatActivity.menu.showMenu();
@@ -122,28 +117,6 @@ public class AFSeatActivity extends FragmentActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        //super.onActivityResult(requestCode, resultCode, data);
-        if(data == null){
-            System.err.println("data is null");
-            return;
-        }
-        classAdded = true;
-        System.err.println("class added");
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if( classAdded ){
-            Toast.makeText(this, "Loading for newly added class...", Toast.LENGTH_LONG).show();
-            refreshSeatFragment();
-            classAdded = false;
-        }
-    }
-
 	// check whether internet is available 	
 	public boolean internetConnected(){
 		ConnectivityManager connMgr = (ConnectivityManager) 
