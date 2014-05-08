@@ -132,10 +132,12 @@ public class AFSignupFragment extends Fragment {
             @SuppressWarnings("unchecked")
 			public void onClick(View v) {
                 // Perform action on click
+                System.err.println("error here5.");
             	String email    = text1.getText().toString();
             	String username = text2.getText().toString();
             	String password = text3.getText().toString();
             	String passwd2  = text4.getText().toString();
+                System.err.println("error here1.");
             	if (!password.equals(passwd2)) {
             		AlertDialog.Builder paswdAlert = new AlertDialog.Builder(getActivity());
             		paswdAlert.setMessage("Passwords do not match!");
@@ -146,9 +148,11 @@ public class AFSignupFragment extends Fragment {
                             clearField();
                         }
                     });
+                    System.err.println("error here2.");
             		AlertDialog alert11 = paswdAlert.create();
                     alert11.show();
             	} else {
+                    System.err.println("error here3.");
 	            	loginInfo.add(new BasicNameValuePair("email", email));
 	        		loginInfo.add(new BasicNameValuePair("username", username));
 	        		loginInfo.add(new BasicNameValuePair("password", password));
