@@ -11,6 +11,9 @@ import org.json.JSONObject;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -192,7 +195,10 @@ public class AFClassFragment extends ListFragment {
                                System.err.println("json created failed");
                            }
                            new AFClassHttpPostTask().execute(postaddclass);
-	                	   System.err.println("yes clicked");
+                           Intent i = new Intent();
+                           i.putExtra("classAdded",1);
+                           getActivity().setResult(Activity.RESULT_OK, i);
+                           System.err.println("yes clicked and class added");
 	                   }
 	               });
 			}else{

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 
 public class AFCourseFragment extends ListFragment {
 	private ArrayList<AFCourse> mCourseList;
@@ -40,10 +42,23 @@ public class AFCourseFragment extends ListFragment {
         i.putExtra(AFCourseFragment.EXTRA_NAME, course.getId());
         i.setClass(getActivity(), AFClassActivity.class);
         try{
-        	startActivity(i);
+            startActivityForResult(i, AFSeatActivity.FORADDCLASS);
         }catch(ActivityNotFoundException e){
         	System.err.println("error in startactivity");
         	e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(data == null){
+            System.err.println("data is null");
+            return;
+        }else{
+            Intent i = new Intent();
+            i.putExtra("classAdded", 1);
+            getActivity().setResult(Activity.RESULT_OK, i);
+            System.err.println("class added");
         }
     }
 	
