@@ -60,15 +60,9 @@ public class AFGeneralHttpTask {
             HttpClient httpClient = new DefaultHttpClient();
             // make a post request object
             HttpPost httpPost = new HttpPost(ADDCLASSURL);
-            //System.err.println("jsonString looks as such:"+jsonString);
             // put strin got entity
             try {
-                //StringEntity entity = new StringEntity(jsonString, "UTF-8");
-                //httpPost.setEntity(entity);
                 httpPost.setEntity((HttpEntity) new UrlEncodedFormEntity(postaddclass));
-                //set header
-                //httpPost.setHeader("Accept", "application/json");
-                //httpPost.setHeader("Content-Type", "application/json");
                 try {
                     HttpResponse response = httpClient.execute(httpPost);
                     return response.getEntity().getContent();

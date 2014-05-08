@@ -38,7 +38,6 @@ public class AFSeatFragment extends ListFragment {
 	private AFSeatAdapter<AFSeat> mSeatAdapter;
 	// test with 301
     LoginSingleton loginuser = LoginSingleton.getInstance();
-	//private String userId = "22";
     private String userId = loginuser.getUID();
 	public static final int EMPTYSEATLIST = 100;
 	private final String EMPTYTAG = "seat list is empty";

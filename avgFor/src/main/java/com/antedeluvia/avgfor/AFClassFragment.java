@@ -32,6 +32,8 @@ public class AFClassFragment extends ListFragment {
 	private static AFClass mClass;	//used for dialog to determine message
 	private final String DIALOG = "dialog tag";
 	private final String CLASSURL = "http://avgfor.com/api/classes/";
+    LoginSingleton loginuser = LoginSingleton.getInstance();
+    private String userId = loginuser.getUID();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -180,19 +182,15 @@ public class AFClassFragment extends ListFragment {
 	               }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 	                   public void onClick(DialogInterface dialog, int id) {
 	                       // FIRE ZE MISSILES!
-                           //JSONObject jsObj = new JSONObject();
                            List<NameValuePair> postaddclass = new ArrayList<NameValuePair>(2);
                            try {
-                               //jsObj.put("user_id","22");
-                               //jsObj.put("cls_id",mClass.getmId());
-                               postaddclass.add(new BasicNameValuePair("user_id", "22"));
+                               postaddclass.add(new BasicNameValuePair("user_id", userId));
                                postaddclass.add(new BasicNameValuePair("cls_id", mClass.getmId()));
 
                            } catch (Exception e) {
                                e.printStackTrace();
                                System.err.println("json created failed");
                            }
-                           //new AFClassHttpPostTask().execute("http://avgfor.com/api/together/create",jsObj.toString());
                            new AFClassHttpPostTask().execute(postaddclass);
 	                	   System.err.println("yes clicked");
 	                   }
