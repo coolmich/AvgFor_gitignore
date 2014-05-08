@@ -2,6 +2,8 @@ package com.antedeluvia.avgfor;
 
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -27,5 +29,8 @@ public class AFSubjectActivity extends FragmentActivity {
 	            "android");
 		TextView actionBarTitle = (TextView) findViewById(titleId);
 		actionBarTitle.setTextColor(getResources().getColor(R.color.pale));
-	}	
+
+
+	}
+
 }

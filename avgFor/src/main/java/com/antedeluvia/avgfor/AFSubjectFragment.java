@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -44,6 +45,21 @@ public class AFSubjectFragment extends ListFragment {
 			//ab.setHomeAsUpIndicator(R.drawable.ic_navigation_drawer);
 		}*/
 	}
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(data == null) {
+            System.err.println("data is null");
+            return;
+        }else{
+            Intent i = new Intent();
+            i.putExtra("classAdded",1);
+            getActivity().setResult(Activity.RESULT_OK, i);
+            System.err.println("class added");
+        }
+    }
+
+
 	
 	@Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -52,7 +68,7 @@ public class AFSubjectFragment extends ListFragment {
         i.putExtra(AFSubjectFragment.EXTRA_NAME, subject.getId());
         i.setClass(getActivity(), AFCourseActivity.class);
         try{
-        	startActivity(i);
+        	startActivityForResult(i, AFSeatActivity.FORADDCLASS);
         }catch(ActivityNotFoundException e){
         	System.err.println("error in startactivity");
         	e.printStackTrace();

@@ -11,6 +11,9 @@ import org.json.JSONObject;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -32,7 +35,7 @@ public class AFClassFragment extends ListFragment {
 	private static AFClass mClass;	//used for dialog to determine message
 	private final String DIALOG = "dialog tag";
 	private final String CLASSURL = "http://avgfor.com/api/classes/";
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -42,7 +45,8 @@ public class AFClassFragment extends ListFragment {
 		System.err.println(url);
 		new AFClassHttpGetTask().execute(url);
 	}
-	
+
+
 	public void updateListFromHttp(String result){
 		JSONArray jsarr;
 		try {
@@ -194,7 +198,12 @@ public class AFClassFragment extends ListFragment {
                            }
                            //new AFClassHttpPostTask().execute("http://avgfor.com/api/together/create",jsObj.toString());
                            new AFClassHttpPostTask().execute(postaddclass);
-	                	   System.err.println("yes clicked");
+                           // set result for data back
+                           // set default result
+                           Intent i = new Intent();
+                           i.putExtra("classAdded",1);
+                           getActivity().setResult(Activity.RESULT_OK, i);
+	                	   System.err.println("yes clicked and class added");
 	                   }
 	               });
 			}else{

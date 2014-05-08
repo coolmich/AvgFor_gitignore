@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -30,8 +31,23 @@ public class AFCourseFragment extends ListFragment {
 		mCourseList = new ArrayList<AFCourse>();
 		String id = getActivity().getIntent().getStringExtra(AFSubjectFragment.EXTRA_NAME);
 		String url = COURSEURL.concat(id);
-		new AFCourseHttpTask().execute(url);		
+		new AFCourseHttpTask().execute(url);
+
 	}
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(data == null){
+            System.err.println("data is null");
+            return;
+        }else{
+            Intent i = new Intent();
+            i.putExtra("classAdded", 1);
+            getActivity().setResult(Activity.RESULT_OK, i);
+            System.err.println("class added");
+        }
+
+    }
 	
 	@Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -40,12 +56,17 @@ public class AFCourseFragment extends ListFragment {
         i.putExtra(AFCourseFragment.EXTRA_NAME, course.getId());
         i.setClass(getActivity(), AFClassActivity.class);
         try{
-        	startActivity(i);
+            startActivityForResult(i, AFSeatActivity.FORADDCLASS);
         }catch(ActivityNotFoundException e){
         	System.err.println("error in startactivity");
         	e.printStackTrace();
         }
     }
+
+    //@Override
+    //protected void onActivityResult(int requestCode, int resultCode, Intent data){
+
+    //}
 	
 	public void updateListFromHttp(String result){
 		JSONArray jsarr;
