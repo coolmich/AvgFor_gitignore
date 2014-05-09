@@ -49,6 +49,7 @@ public class AFSignupFragment extends Fragment {
 		System.out.println(jsobj.toString());
 			
 		try {
+            System.err.println("Going in the try catch?????");
 			boolean success = jsobj.getBoolean("register");
 			if (!success) {
 				AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
@@ -63,22 +64,20 @@ public class AFSignupFragment extends Fragment {
 	            
 	            AlertDialog alert11 = builder1.create();
                 alert11.show();
-			} else{
-				startActivity(new Intent("com.antedeluvia.avgfor.AFSubjectActivity"));
+			} else {
+                String uid = jsobj.getString("user_id");
+                LoginSingleton loginuser = LoginSingleton.getInstance();
+                loginuser.setUID(uid);
+                Intent i = new Intent(getActivity(), AFSeatActivity.class);
+                i.setClass(getActivity(), AFSeatActivity.class);
+                startActivity(i);
+                getActivity().finish();
 			}
 		} catch (JSONException e) {
-			/*AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-            builder1.setMessage("Email/Username has been taken.");
-            builder1.setNeutralButton("OK",
-                    new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
-                }
-            });
-
-            AlertDialog alert11 = builder1.create();
-            alert11.show();*/
-		}
+            // Do nothing
+            System.err.println("ERRRRRROR???????");
+            e.printStackTrace();
+        }
 		
 	}
 	
@@ -132,27 +131,38 @@ public class AFSignupFragment extends Fragment {
             @SuppressWarnings("unchecked")
 			public void onClick(View v) {
                 // Perform action on click
-                System.err.println("error here5.");
             	String email    = text1.getText().toString();
             	String username = text2.getText().toString();
             	String password = text3.getText().toString();
             	String passwd2  = text4.getText().toString();
-                System.err.println("error here1.");
             	if (!password.equals(passwd2)) {
-            		AlertDialog.Builder paswdAlert = new AlertDialog.Builder(getActivity());
-            		paswdAlert.setMessage("Passwords do not match!");
-            		paswdAlert.setNeutralButton("OK",
+                    AlertDialog.Builder paswdAlert = new AlertDialog.Builder(getActivity());
+                    paswdAlert.setMessage("Passwords do not match!");
+                    paswdAlert.setNeutralButton("OK",
                             new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                            clearField();
-                        }
-                    });
-                    System.err.println("error here2.");
-            		AlertDialog alert11 = paswdAlert.create();
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    clearField();
+                                }
+                            }
+                    );
+                    AlertDialog alert11 = paswdAlert.create();
                     alert11.show();
+                } else if (email.equals("") || username.equals("")
+                        || password.equals("") || passwd2.equals("")) {
+                    AlertDialog.Builder emptyAlert = new AlertDialog.Builder(getActivity());
+                    emptyAlert.setMessage("Field(s) missing.");
+                    emptyAlert.setNeutralButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    clearField();
+                                }
+                            }
+                    );
+                    AlertDialog alert1 = emptyAlert.create();
+                    alert1.show();
             	} else {
-                    System.err.println("error here3.");
 	            	loginInfo.add(new BasicNameValuePair("email", email));
 	        		loginInfo.add(new BasicNameValuePair("username", username));
 	        		loginInfo.add(new BasicNameValuePair("password", password));

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.widget.TextView;
 
 public class AFSignupActivity extends FragmentActivity {
 	
@@ -23,5 +24,11 @@ public class AFSignupActivity extends FragmentActivity {
 			fm.beginTransaction().add(R.id.signup_fragment,fragment).commit();
 			
 		}
+
+        // set app name color
+        int titleId = getResources().getIdentifier("action_bar_title", "id",
+                "android");
+        TextView actionBarTitle = (TextView) findViewById(titleId);
+        actionBarTitle.setTextColor(getResources().getColor(R.color.pale));
 	}
 }

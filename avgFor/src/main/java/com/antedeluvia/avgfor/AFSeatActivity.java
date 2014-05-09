@@ -49,7 +49,7 @@ public class AFSeatActivity extends FragmentActivity {
 			AFAlertFragment dialog = AFAlertFragment.newInstance(INTERNETERR);
 			dialog.show(fm, DIALOG);
 		}
-		
+
 		// set app name color
 		int titleId = getResources().getIdentifier("action_bar_title", "id",
 	            "android");
