@@ -14,40 +14,43 @@
         android:gravity="center"
         android:textColor="@color/gray_blue"
         android:drawableTop="@drawable/seat_icon"
-        android:background="@drawable/menu_block_background"
+        android:background="@color/dark"
         android:padding="20dp" />
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/menu_help_row"
         android:text="@string/help"
         android:textSize="11sp"
         android:gravity="center"
         android:textColor="@color/gray_blue"
         android:drawableTop="@drawable/help_icon"
-        android:background="@drawable/menu_block_background"
+        android:background="@color/dark"
         android:padding="20dp" />
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/menu_feedback_row"
         android:text="@string/feedback"
         android:textSize="11sp"
         android:gravity="center"
         android:textColor="@color/gray_blue"
         android:drawableTop="@drawable/feedback_icon"
-        android:background="@drawable/menu_block_background"
+        android:background="@color/dark"
         android:padding="20dp" />
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/menu_logout_row"
         android:text="@string/logout"
         android:textSize="11sp"
         android:gravity="center"
         android:textColor="@color/gray_blue"
         android:drawableTop="@drawable/log_out"
-        android:background="@drawable/menu_block_background"
+        android:background="@color/dark"
         android:padding="20dp" />
       
 </LinearLayout>  

@@ -17,13 +17,16 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 
 public class AFSeatActivity extends FragmentActivity {
-	public static SlidingMenu menu; 
+	public SlidingMenu menu;
 	public static final int INTERNETERR =  500;
 	private final String DIALOG = "dialog tag";
     public static int FORADDCLASS = 202;
     private boolean classAdded = false;
+    private AFMenuFragment menuFrag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +55,11 @@ public class AFSeatActivity extends FragmentActivity {
 		
 		// set app name color
 		int titleId = getResources().getIdentifier("action_bar_title", "id",
-	            "android");
+                "android");
 		TextView actionBarTitle = (TextView) findViewById(titleId);
 		actionBarTitle.setTextColor(getResources().getColor(R.color.pale));
 	}
-	public void refreshSeatFragment(){
-		FragmentManager fm = getSupportFragmentManager();
-		Fragment fragment = new AFSeatFragment();
-		fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
-	}
-	
+
 	private void initSlidingMenu() {
         menu = new SlidingMenu(this);  
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);  
@@ -79,8 +77,9 @@ public class AFSeatActivity extends FragmentActivity {
                 R.string.navigation_drawer_close));*/
         //menu.setBehindScrollScale(0.5f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);  
-        menu.setMenu(R.layout.menu_frame);    
-        getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, AFMenuFragment.newInstance("seat")).commit();
+        menu.setMenu(R.layout.menu_frame);
+        menuFrag = AFMenuFragment.newInstance("seat");
+        getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, menuFrag).commit();
     }
 	@Override  
     public void onBackPressed() {  
@@ -111,7 +110,7 @@ public class AFSeatActivity extends FragmentActivity {
             startActivityForResult(i, FORADDCLASS);
 			return true;
 		case android.R.id.home:
-			AFSeatActivity.menu.showMenu();
+			menu.showMenu();
 			System.err.println("home btn clicked");
 			return true;
 		case R.id.af_refresh_btn:
@@ -152,5 +151,20 @@ public class AFSeatActivity extends FragmentActivity {
 	        return false;
 	    }
 	}
+
+    public void refreshSeatFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new AFSeatFragment();
+        fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
+        menuFrag.toggleMenuColor(menuFrag.getView(), (TextView)menuFrag.getView().findViewById(R.id.menu_seat_row));
+    }
+
+    public void refreshHelpFragment(){
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new AFHelpFragment();
+        fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
+        menuFrag.toggleMenuColor(menuFrag.getView(), (TextView)menuFrag.getView().findViewById(R.id.menu_help_row));
+    }
+
 
 }

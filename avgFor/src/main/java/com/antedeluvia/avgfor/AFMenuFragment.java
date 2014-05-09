@@ -15,12 +15,6 @@ public class AFMenuFragment extends Fragment {
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		/*
-		mMenuList = new ArrayList<String>();
-		mMenuList.add("Seat");
-		mMenuList.add("Log out");
-		ArrayAdapter<String> adapter = new AFNavigationAdapter(mMenuList);
-		*/
 	}
 
     public static AFMenuFragment newInstance(String item){
@@ -39,6 +33,8 @@ public class AFMenuFragment extends Fragment {
         TextView tx = findActiveView(view, type);
         tx.setBackgroundColor(0xff2A323B);
 
+        configureOnClickListener(view);
+
         return view;
 	}
 
@@ -49,24 +45,35 @@ public class AFMenuFragment extends Fragment {
             return null;
         }
     }
-	
-	/*
-	private class AFNavigationAdapter<String> extends ArrayAdapter{
-		public AFNavigationAdapter(ArrayList<String> list){
-			super(getActivity(),R.layout.menu_row, list);
-		}
-		
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent){
-			// make sure the view is not null
-			if(convertView == null){
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.menu_row, null);
-			}
-			TextView tx = (TextView) convertView.findViewById(R.id.navi_row_title);
-			tx.setText(mMenuList.get(position));
-			//tx.setTextColor(Color.WHITE);
-			return convertView;
-		}
-	}*/
+
+    private void configureOnClickListener(final View bigView){
+        final TextView tx1 = (TextView)bigView.findViewById(R.id.menu_seat_row);
+        tx1.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                AFSeatActivity ac = (AFSeatActivity)getActivity();
+                ac.refreshSeatFragment();
+                ac.menu.toggle();
+            }
+        });
+
+        TextView tx2 = (TextView)bigView.findViewById(R.id.menu_help_row);
+        tx2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                AFSeatActivity ac = (AFSeatActivity)getActivity();
+                ac.refreshHelpFragment();
+                ac.menu.toggle();
+            }
+        });
+
+    }
+
+    // highly hard coded
+    public void toggleMenuColor(View view, TextView tx){
+        view.findViewById(R.id.menu_seat_row).setBackgroundColor(0xff212226);
+        view.findViewById(R.id.menu_help_row).setBackgroundColor(0xff212226);
+        tx.setBackgroundColor(0xff2A323B);
+    }
 
 }
