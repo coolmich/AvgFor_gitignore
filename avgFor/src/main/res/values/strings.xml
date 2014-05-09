@@ -19,5 +19,6 @@
     <string name="editT2">Password</string>
     <string name="Signup">Sign up</string>
     <string name="Signin">Sign in</string>
-    
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
