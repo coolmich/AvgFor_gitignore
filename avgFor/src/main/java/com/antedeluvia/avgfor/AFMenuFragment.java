@@ -1,6 +1,7 @@
 package com.antedeluvia.avgfor;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -64,6 +65,18 @@ public class AFMenuFragment extends Fragment {
                 AFSeatActivity ac = (AFSeatActivity)getActivity();
                 ac.refreshHelpFragment();
                 ac.menu.toggle();
+            }
+        });
+
+        TextView tx3 = (TextView)bigView.findViewById(R.id.menu_feedback_row);
+        tx3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("plain/text");
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"avgfor@gmail.com"});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Avgfor Feedback");
+                startActivity(Intent.createChooser(i, "Send via email"));
             }
         });
 
