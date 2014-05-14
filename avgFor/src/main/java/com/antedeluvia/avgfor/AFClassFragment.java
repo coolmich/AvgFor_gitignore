@@ -198,6 +198,7 @@ public class AFClassFragment extends ListFragment {
                            Intent i = new Intent();
                            i.putExtra("classAdded",1);
                            getActivity().setResult(Activity.RESULT_OK, i);
+                           getActivity().finish();
                            System.err.println("yes clicked and class added");
 	                   }
 	               });

@@ -59,6 +59,7 @@ public class AFCourseFragment extends ListFragment {
             i.putExtra("classAdded", 1);
             getActivity().setResult(Activity.RESULT_OK, i);
             System.err.println("class added");
+            getActivity().finish();
         }
     }
 	
