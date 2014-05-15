@@ -26,11 +26,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.cengalabs.flatui.FlatUI;
+import com.cengalabs.flatui.views.FlatButton;
+import com.cengalabs.flatui.views.FlatCheckBox;
+import com.cengalabs.flatui.views.FlatEditText;
+import com.cengalabs.flatui.views.FlatRadioButton;
+import com.cengalabs.flatui.views.FlatSeekBar;
+import com.cengalabs.flatui.views.FlatTextView;
+import com.cengalabs.flatui.views.FlatToggleButton;
+
 public class AFSignupFragment extends Fragment {
 	
 	public EditText text1, text2, text3, text4;
-	
-	public void onCreate(Bundle savedInstanceState){
+    private LoginSingleton loginuser = LoginSingleton.getInstance();
+
+    public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		
 	}
@@ -59,18 +69,17 @@ public class AFSignupFragment extends Fragment {
 	                public void onClick(DialogInterface dialog, int id) {
 	                    dialog.cancel();
 	                    clearField();
+                        loginuser.clear();
+
 	                }
 	            });
 	            
 	            AlertDialog alert11 = builder1.create();
                 alert11.show();
 			} else {
-                String uid = jsobj.getString("user_id");
-                LoginSingleton loginuser = LoginSingleton.getInstance();
-                loginuser.setUID(uid);
-                Intent i = new Intent(getActivity(), AFSeatActivity.class);
+                /*Intent i = new Intent(getActivity(), AFSeatActivity.class);
                 i.setClass(getActivity(), AFSeatActivity.class);
-                startActivity(i);
+                startActivity(i);*/
                 getActivity().finish();
 			}
 		} catch (JSONException e) {
@@ -126,7 +135,7 @@ public class AFSignupFragment extends Fragment {
 		text4.setHint("Re-enter Password");
 		final List<NameValuePair> loginInfo = new ArrayList<NameValuePair>(3);
 		
-		final Button button = (Button) view.findViewById(R.id.signupBtn);
+		final FlatButton button = (FlatButton) view.findViewById(R.id.signupBtn);
         button.setOnClickListener(new View.OnClickListener() {
             @SuppressWarnings("unchecked")
 			public void onClick(View v) {
@@ -166,6 +175,8 @@ public class AFSignupFragment extends Fragment {
 	            	loginInfo.add(new BasicNameValuePair("email", email));
 	        		loginInfo.add(new BasicNameValuePair("username", username));
 	        		loginInfo.add(new BasicNameValuePair("password", password));
+                    loginuser.setEmail(email);
+                    loginuser.setPwd(password);
 	            	new AFSignupHttpTask().execute(loginInfo);
             	}
             }

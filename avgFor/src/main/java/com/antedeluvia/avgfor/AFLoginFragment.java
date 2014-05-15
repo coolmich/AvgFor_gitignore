@@ -65,7 +65,7 @@ public class AFLoginFragment extends Fragment {
 		}
 		
 		if (uid != null) {
-			LoginSingleton loginuser = LoginSingleton.getInstance();
+            LoginSingleton loginuser = LoginSingleton.getInstance();
 			loginuser.setUID(uid);
             Intent i = new Intent(getActivity(), AFSeatActivity.class);
             i.setClass(getActivity(), AFSeatActivity.class);
@@ -80,12 +80,21 @@ public class AFLoginFragment extends Fragment {
         text2.setText("");
         text1.requestFocus();
 	}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LoginSingleton loginuser = LoginSingleton.getInstance();
+        text1.setText(loginuser.getEmail());
+        text2.setText(loginuser.getPwd());
+    }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 		      ViewGroup container, Bundle savedInstanceState) {
 
 	    super.onCreateView(inflater, container, savedInstanceState);
+        //FlatUI.initDefaultValues(this);
 	    View view = inflater.inflate(R.layout.login_page, container, false);
 	    text1 = (EditText) view.findViewById(R.id.editText1);
 		text2 = (EditText) view.findViewById(R.id.editText2);

@@ -2,7 +2,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
         minSdkVersion 11
@@ -21,4 +21,10 @@ dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:appcompat-v7:+'
     compile project(':library')
+    compile 'com.github.eluleci:flatui:2.0.0'
 }
+
+dependencies {
+    compile 'com.github.eluleci:flatui:2.0.0'
+}
+

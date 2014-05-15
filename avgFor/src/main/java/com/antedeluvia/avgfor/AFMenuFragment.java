@@ -1,6 +1,7 @@
 package com.antedeluvia.avgfor;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -64,6 +65,17 @@ public class AFMenuFragment extends Fragment {
                 AFSeatActivity ac = (AFSeatActivity)getActivity();
                 ac.refreshHelpFragment();
                 ac.menu.toggle();
+            }
+        });
+
+        TextView tx3 = (TextView)bigView.findViewById(R.id.menu_logout_row);
+        tx3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), AFLoginActivity.class);
+                i.setClass(getActivity(), AFLoginActivity.class);
+                startActivity(i);
+                getActivity().finish();
             }
         });
 
