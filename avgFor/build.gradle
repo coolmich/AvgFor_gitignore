@@ -17,8 +17,13 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:appcompat-v7:+'
     compile project(':library')
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
 }

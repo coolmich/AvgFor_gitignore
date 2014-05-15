@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +21,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 
-public class AFSeatActivity extends FragmentActivity {
+public class AFSeatActivity extends ActionBarActivity {
 	public SlidingMenu menu;
 	public static final int INTERNETERR =  500;
 	private final String DIALOG = "dialog tag";
@@ -113,9 +114,9 @@ public class AFSeatActivity extends FragmentActivity {
 			menu.showMenu();
 			System.err.println("home btn clicked");
 			return true;
-		case R.id.af_refresh_btn:
-			refreshSeatFragment();
-			return true;
+//		case R.id.af_refresh_btn:
+//			refreshSeatFragment();
+//			return true;
 		default: 
 			return super.onOptionsItemSelected(item);
 		}
