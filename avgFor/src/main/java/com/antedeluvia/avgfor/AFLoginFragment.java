@@ -94,7 +94,6 @@ public class AFLoginFragment extends Fragment {
 		      ViewGroup container, Bundle savedInstanceState) {
 
 	    super.onCreateView(inflater, container, savedInstanceState);
-        //FlatUI.initDefaultValues(this);
 	    View view = inflater.inflate(R.layout.login_page, container, false);
 	    text1 = (EditText) view.findViewById(R.id.editText1);
 		text2 = (EditText) view.findViewById(R.id.editText2);

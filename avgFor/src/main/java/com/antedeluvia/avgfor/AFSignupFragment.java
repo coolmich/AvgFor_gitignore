@@ -135,7 +135,7 @@ public class AFSignupFragment extends Fragment {
 		text4.setHint("Re-enter Password");
 		final List<NameValuePair> loginInfo = new ArrayList<NameValuePair>(3);
 		
-		final FlatButton button = (FlatButton) view.findViewById(R.id.signupBtn);
+		final Button button = (Button) view.findViewById(R.id.signupBtn);
         button.setOnClickListener(new View.OnClickListener() {
             @SuppressWarnings("unchecked")
 			public void onClick(View v) {
