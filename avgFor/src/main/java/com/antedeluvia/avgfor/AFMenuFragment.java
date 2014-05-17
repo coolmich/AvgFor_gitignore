@@ -4,6 +4,7 @@ package com.antedeluvia.avgfor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import org.w3c.dom.Text;
 
 public class AFMenuFragment extends Fragment {
     private static final String MENUTAG = "menu tag";
+    public static final int LOGOUT = 200;
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -77,6 +79,15 @@ public class AFMenuFragment extends Fragment {
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{"avgfor@gmail.com"});
                 i.putExtra(Intent.EXTRA_SUBJECT, "Avgfor Feedback");
                 startActivity(Intent.createChooser(i, "Send via email"));
+            }
+        });
+
+        TextView tx4 = (TextView)bigView.findViewById(R.id.menu_logout_row);
+        tx4.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                AFAlertFragment.newInstance(LOGOUT).show(fm, "alert");
             }
         });
 

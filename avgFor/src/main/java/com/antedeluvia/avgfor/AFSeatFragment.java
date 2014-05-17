@@ -41,14 +41,16 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 public class AFSeatFragment extends ListFragment {
 	private ArrayList<AFSeat> mSeatList;
-	private String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
+	public static String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
 	private AFSeatAdapter<AFSeat> mSeatAdapter;
     private PullToRefreshLayout mPullToRefreshLayout;
-    LoginSingleton loginuser = LoginSingleton.getInstance();
-    private String userId = loginuser.getUID();
+    //LoginSingleton loginuser = LoginSingleton.getInstance();
+    //public String userId = loginuser.getUID();
 	public static final int EMPTYSEATLIST = 100;
 	private final String EMPTYTAG = "seat list is empty";
     private AFSeatHttpTask mTask;
+    public static final String FRONT = "fronend";
+    public static final String BACK = "backend";
 
 
 	@Override
@@ -58,7 +60,7 @@ public class AFSeatFragment extends ListFragment {
 		
 		//fetch data
         mTask = new AFSeatHttpTask();
-		mTask.execute(SEATURL+userId);
+		mTask.execute(SEATURL+AFSeatActivity.uID);
 	}
 
     @Override
@@ -74,7 +76,7 @@ public class AFSeatFragment extends ListFragment {
                         mSeatList = new ArrayList<AFSeat>();
                         setListShown(false);
                         mTask = new AFSeatHttpTask();
-                        mTask.execute(SEATURL+userId);
+                        mTask.execute(SEATURL+AFSeatActivity.uID);
 
                     }
                 }).setup(mPullToRefreshLayout);
@@ -207,16 +209,15 @@ public class AFSeatFragment extends ListFragment {
 				
 		protected void onPostExecute(String result){
 			//if result is null, should notify user
-			
-			updateSeatsInPreference(result);
-            //System.err.println("before update size is :"+mSeatList.size());
-			updateListFromHttp(result);
-            //System.err.println("after update size is :"+mSeatList.size());
-			//set adapter
-            mSeatAdapter = new AFSeatAdapter<AFSeat>();
-            setListAdapter(mSeatAdapter);
-            mPullToRefreshLayout.setRefreshComplete();
-            setListShown(true);
+
+                //System.err.println("before update size is :"+mSeatList.size());
+                updateListFromHttp(result);
+                //System.err.println("after update size is :"+mSeatList.size());
+                //set adapter
+                mSeatAdapter = new AFSeatAdapter<AFSeat>();
+                setListAdapter(mSeatAdapter);
+                mPullToRefreshLayout.setRefreshComplete();
+                setListShown(true);
 
 	    }
 	}
@@ -257,23 +258,7 @@ public class AFSeatFragment extends ListFragment {
 		}
 	}
 	
-    public boolean updateSeatsInPreference( String result ){
-        //shared preference
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor edit = pref.edit();
-        String originalSeats = pref.getString("seats", null);
-        if( originalSeats == null || !originalSeats.equals(result)){
-            edit.putString("seats", result);
-            edit.commit();
-            System.err.println("seats updated in pref");
-            return true;
-        }else{
-            Log.d("d", "Seats same as before");
-            return false;
-        }
 
-    }
-	
 	
 	
 }

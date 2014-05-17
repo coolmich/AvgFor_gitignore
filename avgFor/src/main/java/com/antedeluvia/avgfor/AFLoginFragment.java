@@ -17,9 +17,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +69,13 @@ public class AFLoginFragment extends Fragment {
 		if (uid != null) {
 			LoginSingleton loginuser = LoginSingleton.getInstance();
 			loginuser.setUID(uid);
+            // save uid to file
+            SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putString("user_id", uid);
+            edit.commit();
+            Log.e("e", "uid at login fragment is " + uid);
+
             Intent i = new Intent(getActivity(), AFSeatActivity.class);
             i.setClass(getActivity(), AFSeatActivity.class);
             startActivity(i);

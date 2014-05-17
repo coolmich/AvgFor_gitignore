@@ -3,9 +3,9 @@
     package="com.antedeluvia.avgfor"
     android:versionCode="1"
     android:versionName="1.0" >
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".AFLoginActivity"
+            android:name="com.antedeluvia.avgfor.AFLoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,25 +26,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AFSeatActivity"
+            android:name="com.antedeluvia.avgfor.AFSeatActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".AFSignupActivity"
+            android:name="com.antedeluvia.avgfor.AFSignupActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".AFCourseActivity" 
+            android:name="com.antedeluvia.avgfor.AFCourseActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".AFClassActivity" 
+            android:name="com.antedeluvia.avgfor.AFClassActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".AFSubjectActivity" 
+            android:name="com.antedeluvia.avgfor.AFSubjectActivity"
             android:label="@string/app_name" >
         </activity>
+
+        <service
+            android:name="com.antedeluvia.avgfor.AFSeatIntentService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

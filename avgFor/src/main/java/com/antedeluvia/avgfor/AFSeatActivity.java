@@ -4,14 +4,17 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +31,7 @@ public class AFSeatActivity extends ActionBarActivity {
     public static int FORADDCLASS = 202;
     private boolean classAdded = false;
     private AFMenuFragment menuFrag;
+    public static String uID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,14 @@ public class AFSeatActivity extends ActionBarActivity {
                 "android");
 		TextView actionBarTitle = (TextView) findViewById(titleId);
 		actionBarTitle.setTextColor(getResources().getColor(R.color.pale));
+
+        // get user id
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        uID = pref.getString("user_id", "none");
+        Log.e("e", "user id recorded is "+uID);
+
+        // start service
+        AFSeatIntentService.startSeatServiceOnSchedule(this);
 	}
 
 	private void initSlidingMenu() {
@@ -166,6 +178,9 @@ public class AFSeatActivity extends ActionBarActivity {
         fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
         menuFrag.toggleMenuColor(menuFrag.getView(), (TextView)menuFrag.getView().findViewById(R.id.menu_help_row));
     }
+
+
+
 
 
 }
