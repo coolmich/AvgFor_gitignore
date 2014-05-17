@@ -32,27 +32,59 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.support.v4.app.FragmentActivity;
 
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+
 public class AFSeatFragment extends ListFragment {
 	private ArrayList<AFSeat> mSeatList;
 	private String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
 	private AFSeatAdapter<AFSeat> mSeatAdapter;
-	// test with 301
+    private PullToRefreshLayout mPullToRefreshLayout;
     LoginSingleton loginuser = LoginSingleton.getInstance();
     private String userId = loginuser.getUID();
 	public static final int EMPTYSEATLIST = 100;
 	private final String EMPTYTAG = "seat list is empty";
+    private AFSeatHttpTask mTask;
 
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mSeatList = new ArrayList<AFSeat>();
         System.err.println("Userid: " + userId);
+		
+		//fetch data
+        mTask = new AFSeatHttpTask();
+		mTask.execute(SEATURL+userId);
 
-        //fetch data
-		new AFSeatHttpTask().execute(SEATURL+userId);
 	}
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewGroup viewGroup = (ViewGroup)view;
+        mPullToRefreshLayout = new PullToRefreshLayout(viewGroup.getContext());
+        ActionBarPullToRefresh.from(getActivity()).insertLayoutInto(viewGroup)
+                .theseChildrenArePullable(getListView(), getListView().getEmptyView())
+                .listener(new OnRefreshListener() {
+                    @Override
+                    public void onRefreshStarted(View view) {
+                        mSeatList = new ArrayList<AFSeat>();
+                        setListShown(false);
+                        mTask = new AFSeatHttpTask();
+                        mTask.execute(SEATURL+userId);
+
+                    }
+                }).setup(mPullToRefreshLayout);
+        getListView().setVerticalScrollBarEnabled(false);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mTask.cancel(true);
+    }
 	
 	private class AFSeatAdapter<AFSeat> extends BaseAdapter{
 		private int VIEW_TYPE_COUNT = 3;
@@ -176,10 +208,15 @@ public class AFSeatFragment extends ListFragment {
 			//if result is null, should notify user
 			
 			//TODO
+            System.err.println("before update size is :"+mSeatList.size());
 			updateListFromHttp(result);
+            System.err.println("after update size is :"+mSeatList.size());
 			//set adapter
-			mSeatAdapter = new AFSeatAdapter<AFSeat>();
-			setListAdapter(mSeatAdapter);
+            mSeatAdapter = new AFSeatAdapter<AFSeat>();
+            setListAdapter(mSeatAdapter);
+            mPullToRefreshLayout.setRefreshComplete();
+            setListShown(true);
+
 	    }
 	}
 	

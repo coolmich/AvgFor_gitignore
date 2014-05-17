@@ -3,6 +3,7 @@ package com.antedeluvia.avgfor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,10 +18,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 //@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -36,15 +40,14 @@ public class AFSubjectFragment extends ListFragment {
 		super.onCreate(savedInstanceState);
 		mSubjectList = new ArrayList<AFSubject>();
 		new AFSubjectHttpTask().execute(SUBJECTURL);
-		/*
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-			android.app.ActionBar ab = getActivity().getActionBar();
-			ab.setDisplayHomeAsUpEnabled(true);
-			//ab.setHomeButtonEnabled(true);
-			setHasOptionsMenu(true);
-			//ab.setHomeAsUpIndicator(R.drawable.ic_navigation_drawer);
-		}*/
+
 	}
+
+//    @Override
+//    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+//        super.onCreateView(inflater, container, savedInstanceState);
+//        getListView().setFastScrollEnabled(true);
+//    }
 	
 	@Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -69,6 +72,7 @@ public class AFSubjectFragment extends ListFragment {
             Intent i = new Intent();
             i.putExtra("classAdded", 1);
             getActivity().setResult(Activity.RESULT_OK, i);
+            getActivity().finish();
             System.err.println("class added");
         }
     }
@@ -106,7 +110,7 @@ public class AFSubjectFragment extends ListFragment {
 		}
 	}
 	
-	private class AFSubjectAdapter<AFSubejct> extends ArrayAdapter{
+	private class AFSubjectAdapter<AFSubejct> extends ArrayAdapter implements SectionIndexer{
 		public AFSubjectAdapter(ArrayList<AFSubject> list){
 			super(getActivity(),R.layout.two_line_item, list);
 		}
@@ -125,8 +129,35 @@ public class AFSubjectFragment extends ListFragment {
 			subTitleView.setText(subject.getName());
           
 			return convertView;
-		}	
-	}
+		}
+
+        @Override
+        public Object[] getSections() {
+            String[] str = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+            return str;
+        }
+
+        @Override
+        public int getPositionForSection(int i) {
+            String alpha = (String)getSections()[i];
+            int index = 0;
+            while(index < mSubjectList.size() && !mSubjectList.get(index).getAbbr().startsWith(alpha) ){
+                index++;
+            }
+            return index;
+        }
+
+        @Override
+        public int getSectionForPosition(int i) {
+            String abbr = mSubjectList.get(i).getAbbr();
+            int index = 0;
+            while(!abbr.startsWith((String)getSections()[index])){
+                index++;
+            }
+            return index;
+        }
+    }
 	
 	private class AFSubjectHttpTask extends AsyncTask<String, Integer, String>{
 		
@@ -149,6 +180,33 @@ public class AFSubjectFragment extends ListFragment {
 			//set adapter
 			ArrayAdapter<AFSubject> adapter = new AFSubjectAdapter<AFSubject>(mSubjectList);
 			setListAdapter(adapter);
+            /*
+            getListView().setFastScrollEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                getListView().setFastScrollAlwaysVisible(true);
+            }*/
+            getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    switch (scrollState) {
+                        case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+                            getListView().setFastScrollAlwaysVisible(false);
+                            break;
+                        case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
+                            getListView().setFastScrollAlwaysVisible(true);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                     int totalItemCount) {
+                    // nothing to do here -- this gets called many times per scroll
+                }
+
+            });
 	    }
 	}
 	

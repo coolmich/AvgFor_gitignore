@@ -26,15 +26,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.cengalabs.flatui.FlatUI;
-import com.cengalabs.flatui.views.FlatButton;
-import com.cengalabs.flatui.views.FlatCheckBox;
-import com.cengalabs.flatui.views.FlatEditText;
-import com.cengalabs.flatui.views.FlatRadioButton;
-import com.cengalabs.flatui.views.FlatSeekBar;
-import com.cengalabs.flatui.views.FlatTextView;
-import com.cengalabs.flatui.views.FlatToggleButton;
-
 public class AFSignupFragment extends Fragment {
 	
 	public EditText text1, text2, text3, text4;
