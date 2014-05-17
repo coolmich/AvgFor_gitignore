@@ -11,14 +11,17 @@ import org.json.JSONObject;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -205,10 +208,10 @@ public class AFSeatFragment extends ListFragment {
 		protected void onPostExecute(String result){
 			//if result is null, should notify user
 			
-			//TODO
-            System.err.println("before update size is :"+mSeatList.size());
+			updateSeatsInPreference(result);
+            //System.err.println("before update size is :"+mSeatList.size());
 			updateListFromHttp(result);
-            System.err.println("after update size is :"+mSeatList.size());
+            //System.err.println("after update size is :"+mSeatList.size());
 			//set adapter
             mSeatAdapter = new AFSeatAdapter<AFSeat>();
             setListAdapter(mSeatAdapter);
@@ -254,7 +257,22 @@ public class AFSeatFragment extends ListFragment {
 		}
 	}
 	
+    public boolean updateSeatsInPreference( String result ){
+        //shared preference
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor edit = pref.edit();
+        String originalSeats = pref.getString("seats", null);
+        if( originalSeats == null || !originalSeats.equals(result)){
+            edit.putString("seats", result);
+            edit.commit();
+            System.err.println("seats updated in pref");
+            return true;
+        }else{
+            Log.d("d", "Seats same as before");
+            return false;
+        }
 
+    }
 	
 	
 	
