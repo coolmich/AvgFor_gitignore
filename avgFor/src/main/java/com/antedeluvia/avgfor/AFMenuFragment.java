@@ -55,7 +55,7 @@ public class AFMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 AFSeatActivity ac = (AFSeatActivity)getActivity();
-                ac.refreshSeatFragment();
+                ac.refreshSeatFragment(false);
                 ac.menu.toggle();
             }
         });

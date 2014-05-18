@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -17,6 +16,12 @@ import java.io.InputStream;
 public class AFSeatIntentService extends IntentService {
     private static String SEATRESULT = "seat result";
     private static String uID;
+    private static final int INTERVAL = 20000;
+    public static final String SEATFILE = "seatRawData";
+    public static final String USERFILE = "userInfo";
+    public static final String SEATRAWKEY = "seats";
+    public static final String USERIDKEY = "user_id";
+    public static final String USERFIRSTKEY = "first_time";
 
 
     public AFSeatIntentService() {
@@ -25,45 +30,47 @@ public class AFSeatIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.i("i", "service running");
         new AFBGSeatTask().execute(AFSeatFragment.SEATURL + uID);
     }
 
-    public static void startSeatServiceOnSchedule(Activity activity){
+    public static void startSeatServiceOnSchedule(Activity activity, boolean isOn){
         Intent i = new Intent(activity, AFSeatIntentService.class);
         PendingIntent pi = PendingIntent.getService(activity, 0, i, 0);
 
         AlarmManager manager = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 10000, pi);
+        if( isOn ) {
+            manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), INTERVAL, pi);
+        }else{
+            manager.cancel(pi);
+            pi.cancel();
+        }
     }
 
     @Override
     public void onCreate(){
         super.onCreate();
-        Log.i("i","service started");
-        SharedPreferences pref = getSharedPreferences("userInfo", 0);
-        uID = pref.getString("user_id", "none");
-        Log.e("e", "user id recorded is "+uID);
+        SharedPreferences pref = getSharedPreferences(USERFILE, 0);
+        uID = pref.getString(USERIDKEY, "none");
+        Log.e("i", "user id recorded is "+uID);
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        Log.i("i","service stopped");
     }
 
     public boolean updateSeatsInPreference( String result ){
         //shared preference
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = getSharedPreferences(SEATFILE, 0);
         SharedPreferences.Editor edit = pref.edit();
-        String originalSeats = pref.getString("seats", null);
+        String originalSeats = pref.getString(SEATRAWKEY, null);
         if( originalSeats == null || !originalSeats.equals(result)){
-            edit.putString("seats", result);
+            edit.putString(SEATRAWKEY, result);
             edit.commit();
-            System.err.println("seats updated in pref");
+            Log.e("e","seats updated in pref");
             return true;
         }else{
-            Log.d("d", "Seats same as before");
+            Log.e("e", "Seats same as before");
             return false;
         }
 

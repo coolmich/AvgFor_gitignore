@@ -49,7 +49,7 @@ public class AFSeatActivity extends ActionBarActivity {
 		if( internetConnected() ){
 			System.err.println("connected!");
 			if(fragment == null){
-				fragment = new AFSeatFragment();
+				fragment = AFSeatFragment.newInstance(false);
 				fm.beginTransaction().add(R.id.pure_list_container_with_padding,fragment).commit();
 			}
 		}else{
@@ -70,7 +70,7 @@ public class AFSeatActivity extends ActionBarActivity {
         Log.e("e", "user id recorded is "+uID);
 
         // start service
-        AFSeatIntentService.startSeatServiceOnSchedule(this);
+        AFSeatIntentService.startSeatServiceOnSchedule(this, true);
 	}
 
 	private void initSlidingMenu() {
@@ -126,9 +126,6 @@ public class AFSeatActivity extends ActionBarActivity {
 			menu.showMenu();
 			System.err.println("home btn clicked");
 			return true;
-//		case R.id.af_refresh_btn:
-//			refreshSeatFragment();
-//			return true;
 		default: 
 			return super.onOptionsItemSelected(item);
 		}
@@ -149,7 +146,7 @@ public class AFSeatActivity extends ActionBarActivity {
         super.onPostResume();
         if( classAdded ){
             Toast.makeText(this, "Loading for newly added class...", Toast.LENGTH_LONG).show();
-            refreshSeatFragment();
+            refreshSeatFragment(true);
             classAdded = false;
         }
     }
@@ -165,9 +162,9 @@ public class AFSeatActivity extends ActionBarActivity {
 	    }
 	}
 
-    public void refreshSeatFragment(){
+    public void refreshSeatFragment(boolean reallyRefresh){
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = new AFSeatFragment();
+        Fragment fragment = AFSeatFragment.newInstance(reallyRefresh);
         fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
         menuFrag.toggleMenuColor(menuFrag.getView(), (TextView)menuFrag.getView().findViewById(R.id.menu_seat_row));
     }

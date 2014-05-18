@@ -8,32 +8,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.Intent;
+
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.support.v4.app.FragmentActivity;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -44,22 +30,39 @@ public class AFSeatFragment extends ListFragment {
 	public static String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
 	private AFSeatAdapter<AFSeat> mSeatAdapter;
     private PullToRefreshLayout mPullToRefreshLayout;
-    //LoginSingleton loginuser = LoginSingleton.getInstance();
-    //public String userId = loginuser.getUID();
 	public static final int EMPTYSEATLIST = 100;
 	private final String EMPTYTAG = "seat list is empty";
     private AFSeatHttpTask mTask;
-    public static final String FRONT = "fronend";
-    public static final String BACK = "backend";
+    public static final String REFRESH = "whether real refresh";
 
+    public static AFSeatFragment newInstance(boolean realRefresh){
+        AFSeatFragment f = new AFSeatFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(REFRESH, realRefresh);
+        f.setArguments(args);
+        return f;
+    }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mSeatList = new ArrayList<AFSeat>();
-		//fetch data
-        mTask = new AFSeatHttpTask();
-		mTask.execute(SEATURL+AFSeatActivity.uID);
+        // determine whether really refresh
+        boolean reallyRefresh = getArguments().getBoolean(REFRESH);
+        // if user login the first time, execute the task
+        if(reallyRefresh || getActivity().getSharedPreferences(AFSeatIntentService.USERFILE, 0)
+                .getBoolean(AFSeatIntentService.USERFIRSTKEY, true) ){
+            getActivity().getSharedPreferences(AFSeatIntentService.USERFILE, 0).edit()
+                    .putBoolean(AFSeatIntentService.USERFIRSTKEY, false).commit();
+            mTask = new AFSeatHttpTask();
+            mTask.execute(SEATURL + AFSeatActivity.uID);
+        }else {
+            SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
+            String originalSeats = pref.getString(AFSeatIntentService.SEATRAWKEY, null);
+            updateListFromHttp(originalSeats);
+            mSeatAdapter = new AFSeatAdapter<AFSeat>();
+            setListAdapter(mSeatAdapter);
+        }
 	}
 
     @Override
@@ -85,7 +88,9 @@ public class AFSeatFragment extends ListFragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        mTask.cancel(true);
+        if( mTask != null ) {
+            mTask.cancel(true);
+        }
     }
 	
 	private class AFSeatAdapter<AFSeat> extends BaseAdapter{
@@ -209,15 +214,16 @@ public class AFSeatFragment extends ListFragment {
 		protected void onPostExecute(String result){
 			//if result is null, should notify user
 
-                //System.err.println("before update size is :"+mSeatList.size());
-                updateListFromHttp(result);
-                //System.err.println("after update size is :"+mSeatList.size());
-                //set adapter
-                mSeatAdapter = new AFSeatAdapter<AFSeat>();
-                setListAdapter(mSeatAdapter);
-                mPullToRefreshLayout.setRefreshComplete();
-                setListShown(true);
-
+            //System.err.println("before update size is :"+mSeatList.size());
+            updateListFromHttp(result);
+            //System.err.println("after update size is :"+mSeatList.size());
+            //set adapter
+            mSeatAdapter = new AFSeatAdapter<AFSeat>();
+            setListAdapter(mSeatAdapter);
+            mPullToRefreshLayout.setRefreshComplete();
+            setListShown(true);
+            SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
+            pref.edit().putString(AFSeatIntentService.SEATRAWKEY, result).commit();
 	    }
 	}
 	

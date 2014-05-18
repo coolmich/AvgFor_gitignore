@@ -37,6 +37,8 @@ public class AFAlertFragment extends DialogFragment{
                     // remove user id in preference
                     SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
                     pref.edit().remove("user_id").commit();
+                    // cancel service
+                    AFSeatIntentService.startSeatServiceOnSchedule(getActivity(), false);
                     // go to login activity
                     Intent intent = new Intent(getActivity(), AFLoginActivity.class);
                     startActivity(intent);

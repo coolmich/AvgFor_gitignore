@@ -52,11 +52,12 @@ public class AFLoginActivity extends FragmentActivity {
 	}
 
     private boolean checkLogin(){
-        SharedPreferences pref = getSharedPreferences("userInfo", 0);
-        String id = pref.getString("user_id", "none");
+        SharedPreferences pref = getSharedPreferences(AFSeatIntentService.USERFILE, 0);
+        String id = pref.getString(AFSeatIntentService.USERIDKEY, "none");
         if( id.equals("none") ){
             return false;
         }
+        pref.edit().putBoolean(AFSeatIntentService.USERFIRSTKEY, false);
         return true;
     }
 

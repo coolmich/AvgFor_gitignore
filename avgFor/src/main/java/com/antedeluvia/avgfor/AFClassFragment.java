@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -187,7 +188,7 @@ public class AFClassFragment extends ListFragment {
 	                       // FIRE ZE MISSILES!
                            List<NameValuePair> postaddclass = new ArrayList<NameValuePair>(2);
                            try {
-                               postaddclass.add(new BasicNameValuePair("user_id", userId));
+                               postaddclass.add(new BasicNameValuePair("user_id", AFSeatActivity.uID));
                                postaddclass.add(new BasicNameValuePair("cls_id", mClass.getmId()));
 
                            } catch (Exception e) {

@@ -70,11 +70,12 @@ public class AFLoginFragment extends Fragment {
             LoginSingleton loginuser = LoginSingleton.getInstance();
 			loginuser.setUID(uid);
             // save uid to file
-            SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
+            SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.USERFILE, 0);
             SharedPreferences.Editor edit = pref.edit();
-            edit.putString("user_id", uid);
+            edit.putString(AFSeatIntentService.USERIDKEY, uid);
+            edit.putBoolean(AFSeatIntentService.USERFIRSTKEY, true);
             edit.commit();
-            Log.e("e", "uid at login fragment is " + uid);
+            Log.e("d", "uid at login fragment is " + uid);
 
             Intent i = new Intent(getActivity(), AFSeatActivity.class);
             i.setClass(getActivity(), AFSeatActivity.class);
