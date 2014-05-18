@@ -46,7 +46,7 @@ public class AFSeatActivity extends ActionBarActivity {
 		// if there's internet then create seat fragment
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.pure_list_container_with_padding);
-		if( internetConnected() ){
+		if( internetConnected(this) ){
 			System.err.println("connected!");
 			if(fragment == null){
 				fragment = AFSeatFragment.newInstance(false);
@@ -151,9 +151,9 @@ public class AFSeatActivity extends ActionBarActivity {
         }
     }
 	// check whether internet is available 	
-	public boolean internetConnected(){
+	public static boolean internetConnected(Context context){
 		ConnectivityManager connMgr = (ConnectivityManager) 
-		        getSystemService(Context.CONNECTIVITY_SERVICE);
+		        context.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    if (networkInfo != null && networkInfo.isConnected()) {
 	        return true;

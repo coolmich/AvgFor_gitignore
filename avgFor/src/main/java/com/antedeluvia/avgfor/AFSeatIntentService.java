@@ -30,7 +30,9 @@ public class AFSeatIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        new AFBGSeatTask().execute(AFSeatFragment.SEATURL + uID);
+        if( AFSeatActivity.internetConnected(this) ) {
+            new AFBGSeatTask().execute(AFSeatFragment.SEATURL + uID);
+        }
     }
 
     public static void startSeatServiceOnSchedule(Activity activity, boolean isOn){
