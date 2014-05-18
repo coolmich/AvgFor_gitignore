@@ -67,7 +67,7 @@ public class AFLoginFragment extends Fragment {
 		}
 		
 		if (uid != null) {
-			LoginSingleton loginuser = LoginSingleton.getInstance();
+            LoginSingleton loginuser = LoginSingleton.getInstance();
 			loginuser.setUID(uid);
             // save uid to file
             SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
@@ -89,6 +89,14 @@ public class AFLoginFragment extends Fragment {
         text2.setText("");
         text1.requestFocus();
 	}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LoginSingleton loginuser = LoginSingleton.getInstance();
+        text1.setText(loginuser.getEmail());
+        text2.setText(loginuser.getPwd());
+    }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
