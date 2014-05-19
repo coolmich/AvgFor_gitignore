@@ -53,7 +53,6 @@ public class AFSeatIntentService extends IntentService {
         super.onCreate();
         SharedPreferences pref = getSharedPreferences(USERFILE, 0);
         uID = pref.getString(USERIDKEY, "none");
-        Log.e("i", "user id recorded is "+uID);
     }
 
     @Override
@@ -62,6 +61,8 @@ public class AFSeatIntentService extends IntentService {
     }
 
     public boolean updateSeatsInPreference( String result ){
+        AFSeatDatabaseHelper helper = new AFSeatDatabaseHelper(this);
+        helper.analysizeStatus(result);
         //shared preference
         SharedPreferences pref = getSharedPreferences(SEATFILE, 0);
         SharedPreferences.Editor edit = pref.edit();
