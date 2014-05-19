@@ -1,5 +1,6 @@
 package com.antedeluvia.avgfor;
 
+import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 
 public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "seatsDB";
+    private Context contexto;
     private static final int VERSION = 1;
     public static final String SEAT_TB = "seats";
     public static final String SEAT_ID = "id";
@@ -21,6 +23,7 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
 
     public AFSeatDatabaseHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
+        contexto = context;
         Log.e("e","in constructor of database helper");
     }
 
@@ -78,12 +81,6 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 AFSeatStatus seatStatus = queryOneSeatStatus( AFSeatStatus.formUniqueName(jsonObject) );
                 AFSeatStatus newSS = new AFSeatStatus(jsonObject);
-                /* for testing notification
-                if(i == 0){
-                    newSS.setStatus(1);
-                }*/
-                //Log.d("d","status is: "+newSS.getStatus());
-                // end of playing around
                 if( seatStatus == null ){
                     // insert into database
                     // insert the object into database
@@ -96,6 +93,14 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
                         Log.d("d", "notification============================================");
                         // update in database after assign ID
                         updateSeatStatusInDB(newSS, seatStatus.getmID());
+                        // create notification
+                        String text = null;
+                        if( newSS.getStatus() == 0 ){
+                            text = "New space available!";
+                        }else{
+                            text = "The course is full.";
+                        }
+                        ((AFSeatIntentService)contexto).createNotification(newSS.getName().split(":")[0], text, i);
                     }else{
                         Log.d("d", "Nothing changed============================");
                     }

@@ -40,7 +40,7 @@ public class AFSeatStatus {
 
     public static String formUniqueName( JSONObject jsonObject ){
         try {
-            return jsonObject.getString("course")+jsonObject.getString("time");
+            return jsonObject.getString("course")+":"+jsonObject.getString("time");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

@@ -3,11 +3,16 @@ package com.antedeluvia.avgfor;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -16,7 +21,7 @@ import java.io.InputStream;
 public class AFSeatIntentService extends IntentService {
     private static String SEATRESULT = "seat result";
     private static String uID;
-    private static final int INTERVAL = 20000;
+    private static final int INTERVAL = 90000;
     public static final String SEATFILE = "seatRawData";
     public static final String USERFILE = "userInfo";
     public static final String SEATRAWKEY = "seats";
@@ -61,13 +66,15 @@ public class AFSeatIntentService extends IntentService {
     }
 
     public boolean updateSeatsInPreference( String result ){
-        AFSeatDatabaseHelper helper = new AFSeatDatabaseHelper(this);
-        helper.analysizeStatus(result);
         //shared preference
         SharedPreferences pref = getSharedPreferences(SEATFILE, 0);
         SharedPreferences.Editor edit = pref.edit();
         String originalSeats = pref.getString(SEATRAWKEY, null);
         if( originalSeats == null || !originalSeats.equals(result)){
+            // analyse what's happening
+            AFSeatDatabaseHelper helper = new AFSeatDatabaseHelper(this);
+            helper.analysizeStatus(result);
+            // update the preference
             edit.putString(SEATRAWKEY, result);
             edit.commit();
             Log.e("e","seats updated in pref");
@@ -77,6 +84,20 @@ public class AFSeatIntentService extends IntentService {
             return false;
         }
 
+    }
+
+    public void createNotification(String title, String body, int uniqueNum){
+        Intent i = new Intent(this, AFSeatActivity.class);
+        int requestID = (int)System.currentTimeMillis();
+        int flag = PendingIntent.FLAG_CANCEL_CURRENT;
+        PendingIntent pi = PendingIntent.getActivity(this, requestID, i, flag);
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(title).setContentText(body)
+                .setContentIntent(pi).setAutoCancel(true);
+        notification.setDefaults( Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND);
+        NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(uniqueNum, notification.build());
     }
 
     private class AFBGSeatTask extends AsyncTask<String, Integer, String> {
