@@ -91,19 +91,22 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
                     Log.d("d", "new data inserted================================");
                 }else{
                     // check whether the status change
-                    if( newSS.getStatus() != seatStatus.getStatus() && pref.getBoolean(newSS.getName(), false)){
-                        // notification stuff
-                        Log.d("d", "notification============================================");
+                    if( newSS.getStatus() != seatStatus.getStatus() ){
                         // update in database after assign ID
                         updateSeatStatusInDB(newSS, seatStatus.getmID());
-                        // create notification
-                        String text = null;
-                        if( newSS.getStatus() == 0 ){
-                            text = "New space available!";
-                        }else{
-                            text = "The course is full.";
+                        // only notify those marked
+                        if(pref.getBoolean(newSS.getName(), false)) {
+                            // notification stuff
+                            Log.d("d", "notification============================================");
+                            // create notification
+                            String text;
+                            if (newSS.getStatus() == 0) {
+                                text = "New space available!";
+                            } else {
+                                text = "The course is full.";
+                            }
+                            ((AFSeatIntentService) contexto).createNotification(newSS.getName().split(AFSeatStatus.LINKER)[0], text, i);
                         }
-                        ((AFSeatIntentService)contexto).createNotification(newSS.getName().split(AFSeatStatus.LINKER)[0], text, i);
                     }else{
                         Log.d("d", "Nothing changed============================");
                     }

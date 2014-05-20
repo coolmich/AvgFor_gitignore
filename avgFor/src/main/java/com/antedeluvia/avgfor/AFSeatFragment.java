@@ -23,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -159,21 +160,40 @@ public class AFSeatFragment extends ListFragment {
 			}
 			if(type == COURSE_TITLE_TYPE){
 				TextView titleView = (TextView) convertView.findViewById(R.id.seat_lec_title);
-                String name = ((com.antedeluvia.avgfor.AFSeat) seat).getCourse();
+                final String name = ((com.antedeluvia.avgfor.AFSeat) seat).getCourse();
 				titleView.setText(name);
 				TextView subTitleView = (TextView) convertView.findViewById(R.id.seat_lec_day);
 				subTitleView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getDay());
 				TextView timeTextView = (TextView) convertView.findViewById(R.id.seat_lec_time);
-                String time = ((com.antedeluvia.avgfor.AFSeat) seat).getTime();
+                final String time = ((com.antedeluvia.avgfor.AFSeat) seat).getTime();
 				timeTextView.setText(time);
                 // configure notification button
                 ImageButton button = (ImageButton) convertView.findViewById(R.id.turn_seat_notification);
-
-                if( notificationMap.get(AFSeatStatus.formUniqueName(name, time))){
+                final String uniqueName = AFSeatStatus.formUniqueName(name, time);
+                if( notificationMap.get(uniqueName)){
                     button.setImageDrawable(getResources().getDrawable(R.drawable.bell));
                 }else{
                     button.setImageDrawable(getResources().getDrawable(R.drawable.bell_off));
                 }
+                convertView.findViewById(R.id.seat_title).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (notificationMap.get(uniqueName)) {
+                            notificationMap.put(uniqueName, false);
+                            getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0).edit().putBoolean(uniqueName, false).commit();
+                            ((ImageButton) view.findViewById(R.id.turn_seat_notification)).setImageDrawable(getResources().getDrawable(R.drawable.bell_off));
+                            Toast.makeText(getActivity(), "Notification of "+name+" is canceled", Toast.LENGTH_SHORT).show();
+                            Log.e("e", "putting " + uniqueName + " of value false to file");
+                        } else {
+                            notificationMap.put(uniqueName, true);
+                            getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0).edit().putBoolean(uniqueName, true).commit();
+                            ((ImageButton) view.findViewById(R.id.turn_seat_notification)).setImageDrawable(getResources().getDrawable(R.drawable.bell));
+                            Log.e("e", "putting " + uniqueName + " of value true to file");
+                            Toast.makeText(getActivity(), "You'll be notified when "+name+" status change.", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
 			}else{
 				// seat number
 				TextView seatClass = (TextView)convertView.findViewById(R.id.seat_class_number);
@@ -283,10 +303,10 @@ public class AFSeatFragment extends ListFragment {
         SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
         for(int i = 0; i < jsonArray.length(); i++ ){
             try {
-
                 String name = AFSeatStatus.formUniqueName(jsonArray.getJSONObject(i));
                 boolean whetherNotify = pref.getBoolean(name, false);
                 notificationMap.put(name, whetherNotify);
+                Log.e("e","reading from "+name+" and get "+whetherNotify);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
