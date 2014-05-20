@@ -3,6 +3,7 @@ package com.antedeluvia.avgfor;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -11,6 +12,8 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "seatsDB";
@@ -73,7 +76,7 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
         return num;
     }
 
-    public void analysizeStatus( String result ){
+    public void analysizeStatus( String result, SharedPreferences pref){
         try {
             JSONArray jsonArray = new JSONArray( result );
             // analyse for every course
@@ -88,7 +91,7 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
                     Log.d("d", "new data inserted================================");
                 }else{
                     // check whether the status change
-                    if( newSS.getStatus() != seatStatus.getStatus() ){
+                    if( newSS.getStatus() != seatStatus.getStatus() && pref.getBoolean(newSS.getName(), false)){
                         // notification stuff
                         Log.d("d", "notification============================================");
                         // update in database after assign ID
@@ -100,7 +103,7 @@ public class AFSeatDatabaseHelper extends SQLiteOpenHelper {
                         }else{
                             text = "The course is full.";
                         }
-                        ((AFSeatIntentService)contexto).createNotification(newSS.getName().split(":")[0], text, i);
+                        ((AFSeatIntentService)contexto).createNotification(newSS.getName().split(AFSeatStatus.LINKER)[0], text, i);
                     }else{
                         Log.d("d", "Nothing changed============================");
                     }

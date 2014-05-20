@@ -3,6 +3,8 @@ package com.antedeluvia.avgfor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -34,6 +37,7 @@ public class AFSeatFragment extends ListFragment {
 	private final String EMPTYTAG = "seat list is empty";
     private AFSeatHttpTask mTask;
     public static final String REFRESH = "whether real refresh";
+    private HashMap<String, Boolean> notificationMap;
 
     public static AFSeatFragment newInstance(boolean realRefresh){
         AFSeatFragment f = new AFSeatFragment();
@@ -155,11 +159,21 @@ public class AFSeatFragment extends ListFragment {
 			}
 			if(type == COURSE_TITLE_TYPE){
 				TextView titleView = (TextView) convertView.findViewById(R.id.seat_lec_title);
-				titleView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getCourse());
+                String name = ((com.antedeluvia.avgfor.AFSeat) seat).getCourse();
+				titleView.setText(name);
 				TextView subTitleView = (TextView) convertView.findViewById(R.id.seat_lec_day);
 				subTitleView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getDay());
 				TextView timeTextView = (TextView) convertView.findViewById(R.id.seat_lec_time);
-				timeTextView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getTime());
+                String time = ((com.antedeluvia.avgfor.AFSeat) seat).getTime();
+				timeTextView.setText(time);
+                // configure notification button
+                ImageButton button = (ImageButton) convertView.findViewById(R.id.turn_seat_notification);
+
+                if( notificationMap.get(AFSeatStatus.formUniqueName(name, time))){
+                    button.setImageDrawable(getResources().getDrawable(R.drawable.bell));
+                }else{
+                    button.setImageDrawable(getResources().getDrawable(R.drawable.bell_off));
+                }
 			}else{
 				// seat number
 				TextView seatClass = (TextView)convertView.findViewById(R.id.seat_class_number);
@@ -233,6 +247,7 @@ public class AFSeatFragment extends ListFragment {
 		System.err.println("so the fukking result is "+result);			
 		try {
 			jsarr = new JSONArray(result);
+            buildNotificationHashMap( jsarr );
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -262,6 +277,21 @@ public class AFSeatFragment extends ListFragment {
 			index++;
 		}
 	}
+
+    private void buildNotificationHashMap( JSONArray jsonArray){
+        notificationMap = new HashMap<String, Boolean>();
+        SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
+        for(int i = 0; i < jsonArray.length(); i++ ){
+            try {
+
+                String name = AFSeatStatus.formUniqueName(jsonArray.getJSONObject(i));
+                boolean whetherNotify = pref.getBoolean(name, false);
+                notificationMap.put(name, whetherNotify);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 	
 
 	

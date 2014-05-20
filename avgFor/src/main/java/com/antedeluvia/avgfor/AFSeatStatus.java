@@ -10,6 +10,7 @@ public class AFSeatStatus {
     private int mID;
     private String mName;
     private int mStatus;  // 0 for not full, 1 for full
+    public static final String LINKER = ":";
 
     public AFSeatStatus( Cursor cursor){
         mID = cursor.getInt(cursor.getColumnIndex(AFSeatDatabaseHelper.SEAT_ID));
@@ -40,11 +41,15 @@ public class AFSeatStatus {
 
     public static String formUniqueName( JSONObject jsonObject ){
         try {
-            return jsonObject.getString("course")+":"+jsonObject.getString("time");
+            return jsonObject.getString("course")+LINKER+jsonObject.getString("time");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String formUniqueName( String name, String time ){
+        return name+LINKER+time;
     }
 
     public String getName() {

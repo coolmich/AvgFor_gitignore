@@ -17,16 +17,21 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 public class AFSeatIntentService extends IntentService {
-    private static String SEATRESULT = "seat result";
+    //private static String SEATRESULT = "seat result";
     private static String uID;
-    private static final int INTERVAL = 90000;
+    private static final int INTERVAL = 20000;
     public static final String SEATFILE = "seatRawData";
     public static final String USERFILE = "userInfo";
     public static final String SEATRAWKEY = "seats";
     public static final String USERIDKEY = "user_id";
     public static final String USERFIRSTKEY = "first_time";
+    //public static final String WATCHKEY = "class to be notified";
+    //public static final String SEAT_DELI = "-";
+    //public List<String> watchList;
 
 
     public AFSeatIntentService() {
@@ -58,6 +63,8 @@ public class AFSeatIntentService extends IntentService {
         super.onCreate();
         SharedPreferences pref = getSharedPreferences(USERFILE, 0);
         uID = pref.getString(USERIDKEY, "none");
+        //watchList = Arrays.asList(pref.getString(WATCHKEY, "none").split(SEAT_DELI));
+        //Log.e("e","watchList first is: "+watchList.get(0));
     }
 
     @Override
@@ -70,16 +77,24 @@ public class AFSeatIntentService extends IntentService {
         SharedPreferences pref = getSharedPreferences(SEATFILE, 0);
         SharedPreferences.Editor edit = pref.edit();
         String originalSeats = pref.getString(SEATRAWKEY, null);
-        if( originalSeats == null || !originalSeats.equals(result)){
-            // analyse what's happening
-            AFSeatDatabaseHelper helper = new AFSeatDatabaseHelper(this);
-            helper.analysizeStatus(result);
+        if( originalSeats == null){
+            // update the preference
+            edit.putString(SEATRAWKEY, result);
+            edit.commit();
+            Log.e("e","seats created in pref");
+            return true;
+        }else if(!originalSeats.equals(result)){
+            //f( !watchList.get(0).equals("none") ) {
+                AFSeatDatabaseHelper helper = new AFSeatDatabaseHelper(this);
+                helper.analysizeStatus(result, pref);
+            //}
             // update the preference
             edit.putString(SEATRAWKEY, result);
             edit.commit();
             Log.e("e","seats updated in pref");
             return true;
-        }else{
+        }
+        else{
             Log.e("e", "Seats same as before");
             return false;
         }
