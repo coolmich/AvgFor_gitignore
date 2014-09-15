@@ -52,10 +52,12 @@ public class AFSeatFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mSeatList = new ArrayList<AFSeat>();
+        System.err.println("Userid: " + userId);
 		
 		//fetch data
         mTask = new AFSeatHttpTask();
 		mTask.execute(SEATURL+userId);
+
 	}
 
     @Override

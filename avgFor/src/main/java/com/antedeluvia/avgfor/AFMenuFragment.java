@@ -80,6 +80,17 @@ public class AFMenuFragment extends Fragment {
             }
         });
 
+        TextView tx4 = (TextView)bigView.findViewById(R.id.menu_logout_row);
+        tx4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(), AFLoginActivity.class);
+                i.setClass(getActivity(), AFLoginActivity.class);
+                startActivity(i);
+                getActivity().finish();
+            }
+        });
+
     }
 
     // highly hard coded
