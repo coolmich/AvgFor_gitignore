@@ -4,14 +4,17 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +31,7 @@ public class AFSeatActivity extends ActionBarActivity {
     public static int FORADDCLASS = 202;
     private boolean classAdded = false;
     private AFMenuFragment menuFrag;
+    public static String uID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +46,10 @@ public class AFSeatActivity extends ActionBarActivity {
 		// if there's internet then create seat fragment
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.pure_list_container_with_padding);
-		if( internetConnected() ){
+		if( internetConnected(this) ){
 			System.err.println("connected!");
 			if(fragment == null){
-				fragment = new AFSeatFragment();
+				fragment = AFSeatFragment.newInstance(false);
 				fm.beginTransaction().add(R.id.pure_list_container_with_padding,fragment).commit();
 			}
 		}else{
@@ -59,6 +63,14 @@ public class AFSeatActivity extends ActionBarActivity {
                 "android");
 		TextView actionBarTitle = (TextView) findViewById(titleId);
 		actionBarTitle.setTextColor(getResources().getColor(R.color.pale));
+
+        // get user id
+        SharedPreferences pref = getSharedPreferences("userInfo", 0);
+        uID = pref.getString("user_id", "none");
+        Log.e("e", "user id recorded is "+uID);
+
+        // start service
+        AFSeatIntentService.startSeatServiceOnSchedule(this, true);
 	}
 
 	private void initSlidingMenu() {
@@ -114,9 +126,6 @@ public class AFSeatActivity extends ActionBarActivity {
 			menu.showMenu();
 			System.err.println("home btn clicked");
 			return true;
-//		case R.id.af_refresh_btn:
-//			refreshSeatFragment();
-//			return true;
 		default: 
 			return super.onOptionsItemSelected(item);
 		}
@@ -137,14 +146,14 @@ public class AFSeatActivity extends ActionBarActivity {
         super.onPostResume();
         if( classAdded ){
             Toast.makeText(this, "Loading for newly added class...", Toast.LENGTH_LONG).show();
-            refreshSeatFragment();
+            refreshSeatFragment(true);
             classAdded = false;
         }
     }
 	// check whether internet is available 	
-	public boolean internetConnected(){
+	public static boolean internetConnected(Context context){
 		ConnectivityManager connMgr = (ConnectivityManager) 
-		        getSystemService(Context.CONNECTIVITY_SERVICE);
+		        context.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    if (networkInfo != null && networkInfo.isConnected()) {
 	        return true;
@@ -153,9 +162,9 @@ public class AFSeatActivity extends ActionBarActivity {
 	    }
 	}
 
-    public void refreshSeatFragment(){
+    public void refreshSeatFragment(boolean reallyRefresh){
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = new AFSeatFragment();
+        Fragment fragment = AFSeatFragment.newInstance(reallyRefresh);
         fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
         menuFrag.toggleMenuColor(menuFrag.getView(), (TextView)menuFrag.getView().findViewById(R.id.menu_seat_row));
     }
@@ -166,6 +175,9 @@ public class AFSeatActivity extends ActionBarActivity {
         fm.beginTransaction().replace(R.id.pure_list_container_with_padding,fragment).commit();
         menuFrag.toggleMenuColor(menuFrag.getView(), (TextView)menuFrag.getView().findViewById(R.id.menu_help_row));
     }
+
+
+
 
 
 }

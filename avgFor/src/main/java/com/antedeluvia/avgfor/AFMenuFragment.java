@@ -4,6 +4,7 @@ package com.antedeluvia.avgfor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import org.w3c.dom.Text;
 
 public class AFMenuFragment extends Fragment {
     private static final String MENUTAG = "menu tag";
+    public static final int LOGOUT = 200;
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class AFMenuFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 AFSeatActivity ac = (AFSeatActivity)getActivity();
-                ac.refreshSeatFragment();
+                ac.refreshSeatFragment(false);
                 ac.menu.toggle();
             }
         });
@@ -81,13 +83,11 @@ public class AFMenuFragment extends Fragment {
         });
 
         TextView tx4 = (TextView)bigView.findViewById(R.id.menu_logout_row);
-        tx4.setOnClickListener(new View.OnClickListener() {
+        tx4.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(), AFLoginActivity.class);
-                i.setClass(getActivity(), AFLoginActivity.class);
-                startActivity(i);
-                getActivity().finish();
+            public void onClick(View view){
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                AFAlertFragment.newInstance(LOGOUT).show(fm, "alert");
             }
         });
 

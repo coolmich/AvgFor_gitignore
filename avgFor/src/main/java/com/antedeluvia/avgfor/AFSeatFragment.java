@@ -3,34 +3,27 @@ package com.antedeluvia.avgfor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
+
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -38,26 +31,43 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 public class AFSeatFragment extends ListFragment {
 	private ArrayList<AFSeat> mSeatList;
-	private String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
+	public static String SEATURL="http://avgfor.com/api/seat/getUserCoursesSeats/";
 	private AFSeatAdapter<AFSeat> mSeatAdapter;
     private PullToRefreshLayout mPullToRefreshLayout;
-    LoginSingleton loginuser = LoginSingleton.getInstance();
-    private String userId = loginuser.getUID();
 	public static final int EMPTYSEATLIST = 100;
 	private final String EMPTYTAG = "seat list is empty";
     private AFSeatHttpTask mTask;
+    public static final String REFRESH = "whether real refresh";
+    private HashMap<String, Boolean> notificationMap;
 
+    public static AFSeatFragment newInstance(boolean realRefresh){
+        AFSeatFragment f = new AFSeatFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(REFRESH, realRefresh);
+        f.setArguments(args);
+        return f;
+    }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		mSeatList = new ArrayList<AFSeat>();
-        System.err.println("Userid: " + userId);
-		
-		//fetch data
-        mTask = new AFSeatHttpTask();
-		mTask.execute(SEATURL+userId);
-
+        // determine whether really refresh
+        boolean reallyRefresh = getArguments().getBoolean(REFRESH);
+        // if user login the first time, execute the task
+        if(reallyRefresh || getActivity().getSharedPreferences(AFSeatIntentService.USERFILE, 0)
+                .getBoolean(AFSeatIntentService.USERFIRSTKEY, true) ){
+            getActivity().getSharedPreferences(AFSeatIntentService.USERFILE, 0).edit()
+                    .putBoolean(AFSeatIntentService.USERFIRSTKEY, false).commit();
+            mTask = new AFSeatHttpTask();
+            mTask.execute(SEATURL + AFSeatActivity.uID);
+        }else {
+            SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
+            String originalSeats = pref.getString(AFSeatIntentService.SEATRAWKEY, null);
+            updateListFromHttp(originalSeats);
+            mSeatAdapter = new AFSeatAdapter<AFSeat>();
+            setListAdapter(mSeatAdapter);
+        }
 	}
 
     @Override
@@ -73,7 +83,7 @@ public class AFSeatFragment extends ListFragment {
                         mSeatList = new ArrayList<AFSeat>();
                         setListShown(false);
                         mTask = new AFSeatHttpTask();
-                        mTask.execute(SEATURL+userId);
+                        mTask.execute(SEATURL+AFSeatActivity.uID);
 
                     }
                 }).setup(mPullToRefreshLayout);
@@ -83,7 +93,9 @@ public class AFSeatFragment extends ListFragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        mTask.cancel(true);
+        if( mTask != null ) {
+            mTask.cancel(true);
+        }
     }
 	
 	private class AFSeatAdapter<AFSeat> extends BaseAdapter{
@@ -148,11 +160,40 @@ public class AFSeatFragment extends ListFragment {
 			}
 			if(type == COURSE_TITLE_TYPE){
 				TextView titleView = (TextView) convertView.findViewById(R.id.seat_lec_title);
-				titleView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getCourse());
+                final String name = ((com.antedeluvia.avgfor.AFSeat) seat).getCourse();
+				titleView.setText(name);
 				TextView subTitleView = (TextView) convertView.findViewById(R.id.seat_lec_day);
 				subTitleView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getDay());
 				TextView timeTextView = (TextView) convertView.findViewById(R.id.seat_lec_time);
-				timeTextView.setText(((com.antedeluvia.avgfor.AFSeat) seat).getTime());
+                final String time = ((com.antedeluvia.avgfor.AFSeat) seat).getTime();
+				timeTextView.setText(time);
+                // configure notification button
+                ImageButton button = (ImageButton) convertView.findViewById(R.id.turn_seat_notification);
+                final String uniqueName = AFSeatStatus.formUniqueName(name, time);
+                if( notificationMap.get(uniqueName)){
+                    button.setImageDrawable(getResources().getDrawable(R.drawable.bell));
+                }else{
+                    button.setImageDrawable(getResources().getDrawable(R.drawable.bell_off));
+                }
+                convertView.findViewById(R.id.seat_title).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (notificationMap.get(uniqueName)) {
+                            notificationMap.put(uniqueName, false);
+                            getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0).edit().putBoolean(uniqueName, false).commit();
+                            ((ImageButton) view.findViewById(R.id.turn_seat_notification)).setImageDrawable(getResources().getDrawable(R.drawable.bell_off));
+                            Toast.makeText(getActivity(), "Notification of "+name+" is canceled", Toast.LENGTH_SHORT).show();
+                            Log.e("e", "putting " + uniqueName + " of value false to file");
+                        } else {
+                            notificationMap.put(uniqueName, true);
+                            getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0).edit().putBoolean(uniqueName, true).commit();
+                            ((ImageButton) view.findViewById(R.id.turn_seat_notification)).setImageDrawable(getResources().getDrawable(R.drawable.bell));
+                            Log.e("e", "putting " + uniqueName + " of value true to file");
+                            Toast.makeText(getActivity(), "You'll be notified when "+name+" status change.", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
 			}else{
 				// seat number
 				TextView seatClass = (TextView)convertView.findViewById(R.id.seat_class_number);
@@ -206,17 +247,17 @@ public class AFSeatFragment extends ListFragment {
 				
 		protected void onPostExecute(String result){
 			//if result is null, should notify user
-			
-			//TODO
-            System.err.println("before update size is :"+mSeatList.size());
-			updateListFromHttp(result);
-            System.err.println("after update size is :"+mSeatList.size());
-			//set adapter
+
+            //System.err.println("before update size is :"+mSeatList.size());
+            updateListFromHttp(result);
+            //System.err.println("after update size is :"+mSeatList.size());
+            //set adapter
             mSeatAdapter = new AFSeatAdapter<AFSeat>();
             setListAdapter(mSeatAdapter);
             mPullToRefreshLayout.setRefreshComplete();
             setListShown(true);
-
+            SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
+            pref.edit().putString(AFSeatIntentService.SEATRAWKEY, result).commit();
 	    }
 	}
 	
@@ -226,6 +267,7 @@ public class AFSeatFragment extends ListFragment {
 		System.err.println("so the fukking result is "+result);			
 		try {
 			jsarr = new JSONArray(result);
+            buildNotificationHashMap( jsarr );
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -255,9 +297,23 @@ public class AFSeatFragment extends ListFragment {
 			index++;
 		}
 	}
+
+    private void buildNotificationHashMap( JSONArray jsonArray){
+        notificationMap = new HashMap<String, Boolean>();
+        SharedPreferences pref = getActivity().getSharedPreferences(AFSeatIntentService.SEATFILE, 0);
+        for(int i = 0; i < jsonArray.length(); i++ ){
+            try {
+                String name = AFSeatStatus.formUniqueName(jsonArray.getJSONObject(i));
+                boolean whetherNotify = pref.getBoolean(name, false);
+                notificationMap.put(name, whetherNotify);
+                Log.e("e","reading from "+name+" and get "+whetherNotify);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 	
 
-	
 	
 	
 }

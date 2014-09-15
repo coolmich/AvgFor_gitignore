@@ -3,6 +3,8 @@ package com.antedeluvia.avgfor;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
@@ -27,6 +29,23 @@ public class AFAlertFragment extends DialogFragment{
 			break;
 		case(AFSeatFragment.EMPTYSEATLIST):
 			builder.setTitle("Oops, no class yet").setMessage("Use the add button at the top to add class.").setNegativeButton(R.string.ok, null);
+            break;
+        case(AFMenuFragment.LOGOUT):
+            builder.setTitle("Caveat").setMessage("Are you sure to log out?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // remove user id in preference
+                    SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
+                    pref.edit().remove("user_id").commit();
+                    // cancel service
+                    AFSeatIntentService.startSeatServiceOnSchedule(getActivity(), false);
+                    // go to login activity
+                    Intent intent = new Intent(getActivity(), AFLoginActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            }).setNegativeButton("Cancel", null);
+            break;
 		}
 		return builder.create();
 	}

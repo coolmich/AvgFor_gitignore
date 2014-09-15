@@ -63,7 +63,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:id="@+id/innerblock"
-            android:background="@android:color/background_light"
             android:weightSum="1"
             android:layout_weight="0.17"
             android:layout_marginTop="20dp">
@@ -73,7 +72,7 @@
                 android:layout_width="212dp"
                 android:layout_height="35dp"
                 android:text="@string/Signin"
-                android:textColor="#34495e"
+                android:textColor="#eeeeee"
                 android:layout_gravity="left"
                 android:background="@drawable/btn_bg"
                 android:layout_marginLeft="20dp" />
@@ -83,7 +82,7 @@
                 android:layout_width="212dp"
                 android:layout_height="33dp"
                 android:text="@string/Signup"
-                android:textColor="#34495e"
+                android:textColor="#eeeeee"
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/btn_bg"
                 android:layout_marginTop="10dp" />
