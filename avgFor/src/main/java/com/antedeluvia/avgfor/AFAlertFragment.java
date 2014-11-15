@@ -10,8 +10,9 @@ import android.support.v4.app.DialogFragment;
 
 public class AFAlertFragment extends DialogFragment{
 	private final static String DIALOGTYPE = "dialog type";
-	
-	public static AFAlertFragment newInstance(int type){
+    private LoginSingleton loginuser = LoginSingleton.getInstance();
+
+    public static AFAlertFragment newInstance(int type){
 		Bundle args = new Bundle();
 		args.putInt(DIALOGTYPE, type);
 		AFAlertFragment fragment = new AFAlertFragment();
@@ -37,6 +38,7 @@ public class AFAlertFragment extends DialogFragment{
                     // remove user id in preference
                     SharedPreferences pref = getActivity().getSharedPreferences("userInfo", 0);
                     pref.edit().remove("user_id").commit();
+                    loginuser.clear();
                     // cancel service
                     AFSeatIntentService.startSeatServiceOnSchedule(getActivity(), false);
                     // go to login activity

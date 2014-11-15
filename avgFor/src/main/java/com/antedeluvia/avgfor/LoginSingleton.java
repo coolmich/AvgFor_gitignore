@@ -6,6 +6,8 @@ public class LoginSingleton {
 	  private String userID;
       private String email;
       private String passwd;
+      private String tk;
+      private boolean logging_out;
 	 
 	  public static LoginSingleton getInstance()
 	  {
@@ -31,11 +33,16 @@ public class LoginSingleton {
 
       public String getEmail() { return email; }
       public String getPwd() { return passwd; }
+      public boolean isFinished() {return logging_out;}
 	  
 	  public void setUID(String id) {
 		  userID = id;
 	  }
       public void setEmail(String e) { email = e; }
       public void setPwd(String p) {passwd = p; }
-      public void clear() { userID = ""; email = ""; passwd = ""; }
+      public void clear() { userID = ""; email = ""; passwd = ""; tk=""; logging_out = false;}
+      public void setToken(String token) {
+          tk = token;
+      }
+      public void finished() {logging_out = true;}
 }

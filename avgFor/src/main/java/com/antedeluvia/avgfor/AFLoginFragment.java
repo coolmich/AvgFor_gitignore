@@ -14,7 +14,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.android.Facebook;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
@@ -51,11 +50,15 @@ public class AFLoginFragment extends Fragment {
 
     private void onSessionStateChange(Session session, SessionState state,
                                       Exception exception) {
+        /*if (loginuser.loggingOut()) {
+            session = Session.getActiveSession();
+            session.closeAndClearTokenInformation();
+            loginuser.clear();
+        }*/
 
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
             postUserInfo(session);
-
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }
@@ -91,12 +94,15 @@ public class AFLoginFragment extends Fragment {
             edit.putString(AFSeatIntentService.USERIDKEY, token);
             edit.putBoolean(AFSeatIntentService.USERFIRSTKEY, true);
             edit.commit();
+            loginuser.setToken(token);
             Log.e("d", "token at login fragment is " + token);
 
             Intent i = new Intent(getActivity(), AFSeatActivity.class);
             i.setClass(getActivity(), AFSeatActivity.class);
             startActivity(i);
             getActivity().finish();
+            Session session = Session.getActiveSession();
+            session.closeAndClearTokenInformation();
 
         } catch (JSONException e) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
@@ -105,19 +111,12 @@ public class AFLoginFragment extends Fragment {
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
-                            //clearField();
                         }
                     });
 
             AlertDialog alert11 = builder1.create();
             alert11.show();
         }
-	}
-	
-	public void clearField() {
-		text1.setText("");
-        text2.setText("");
-        text1.requestFocus();
 	}
 
     @Override
@@ -194,8 +193,6 @@ public class AFLoginFragment extends Fragment {
                                 String fbId = user.getId();
                                 String name = user.getName();
                                 Log.i(TAG, "Logged in successfully. User details are below..");
-                                Log.i(TAG, "firstname : " + user.getFirstName());
-                                Log.i(TAG, "lastname  : " + user.getLastName());
                                 Log.i(TAG, "name      : " + user.getName());
                                 Log.i(TAG, "userid    : " + user.getId());
                                 Log.i(TAG, "email     : " + user.asMap().get("email"));
@@ -217,6 +214,7 @@ public class AFLoginFragment extends Fragment {
                 });
 
         request.executeAsync();
+        //session.closeAndClearTokenInformation();
     }
 
 	private class AFLoginHttpTask extends AsyncTask<List<NameValuePair>, Integer, String>{

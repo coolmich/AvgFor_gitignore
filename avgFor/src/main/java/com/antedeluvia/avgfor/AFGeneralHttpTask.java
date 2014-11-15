@@ -23,12 +23,13 @@ import android.util.Log;
 
 public class AFGeneralHttpTask {
 
-    final private static String ADDCLASSURL = "http://avgfor.com/api/together/create";
+//    final private static String ADDCLASSURL = "http://avgfor.com/api/together/create";
     final private static String LOGINURL = "http://avgfor.com/api/user/login";
     final private static String SIGNUPURL = "http://AvgFor.com/api/user/register/";
 //    final private static String URL = "http://137.110.62.185:3000/users/register";
 
     final private static String SERVER = "http://54.148.66.96:3000/";
+    final private static String SERVER1 = "http://137.110.62.185:3000/";
     final private static String API_USER_LOGIN = SERVER + "users/register";
     final private static String API_DEPARTMENT_LIST = SERVER + "departments/list";
     final private static String API_DEPARTMENT_LIST_GROUP = SERVER + "departments/listWithGroup";
@@ -69,7 +70,7 @@ public class AFGeneralHttpTask {
         try{
             HttpClient httpClient = new DefaultHttpClient();
             // make a post request object
-            HttpPost httpPost = new HttpPost(ADDCLASSURL);
+            HttpPost httpPost = new HttpPost(API_DEPARTMENT_LIST);
             // put strin got entity
             try {
                 httpPost.setEntity((HttpEntity) new UrlEncodedFormEntity(postaddclass));
