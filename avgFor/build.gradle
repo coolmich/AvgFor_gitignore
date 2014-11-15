@@ -26,6 +26,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:20.0.0'
     compile project(':library')
     compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abc:+'
+    compile project(':facebook')
 }
 
 

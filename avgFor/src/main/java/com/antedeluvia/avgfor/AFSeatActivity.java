@@ -78,7 +78,7 @@ public class AFSeatActivity extends ActionBarActivity {
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);  
         menu.setShadowWidthRes(R.dimen.shadow_width);  
         menu.setShadowDrawable(R.drawable.shadow); 
-        menu.setBehindWidth(200);
+        menu.setBehindWidth(220);
         //menu.setFadeEnabled(true);
         //menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);  
         menu.setFadeDegree(0.35f);  

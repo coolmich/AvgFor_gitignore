@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.TextView;
 
 public class AFLoginActivity extends FragmentActivity {
@@ -30,6 +31,7 @@ public class AFLoginActivity extends FragmentActivity {
             if( internetConnected() ){
                 System.err.println("connected!");
                 if(fragment == null){
+                    Log.i(DIALOG, "what the hell");
                     fragment = new AFLoginFragment();
                     fm.beginTransaction().add(id.login_fragment,fragment).commit();
                 }

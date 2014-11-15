@@ -3,80 +3,98 @@
     xmlns:flatui="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
     android:background="#1abc9c"
     tools:context="com.antedeluvia.avgfor.AFSignupActivity" >
 
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="280dp"
-        android:layout_height="400dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/signupblock"
         android:weightSum="1"
         android:layout_weight="0.17"
         android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="35dp"
         android:layout_marginTop="60dp"
-        android:background="@drawable/bg_login">
+        android:background="@drawable/bg_login"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
+
 
         <EditText
             android:id="@+id/editText1"
-            android:layout_width="240dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/editText2"
+            android:layout_alignLeft="@+id/editText2"
             android:ems="10"
             android:inputType="text"
             android:background="@drawable/input_bg"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="0.05"
-            android:layout_marginTop="40dp" />
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="60dp"
+            android:layout_weight="0.07"
+            android:layout_marginRight="12dp" />
 
         <EditText
             android:id="@+id/editText2"
-            android:layout_width="240dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/editText3"
+            android:layout_alignLeft="@+id/editText3"
+            android:ems="10"
+            android:inputType="text"
+            android:background="@drawable/input_bg"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.07"
+            android:layout_marginRight="12dp"  />
+
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/editText4"
+            android:layout_alignLeft="@+id/editText4"
+            android:ems="10"
+            android:inputType="text"
+            android:background="@drawable/input_bg"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.07"
+            android:layout_marginRight="12dp" />
+
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"
             android:background="@drawable/input_bg"
-            android:layout_weight="0.06"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp" />
-
-        <EditText
-            android:id="@+id/editText3"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:background="@drawable/input_bg"
-            android:layout_weight="0.10"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp" />
-
-        <EditText
-            android:id="@+id/editText4"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:background="@drawable/input_bg"
-            android:layout_weight="0.10"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.07"
+            android:layout_marginRight="12dp" />
 
         <Button
             android:id="@+id/signupBtn"
-            android:layout_width="235dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:text="@string/Signup"
             android:background="@drawable/btn_bg"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="15dp" />
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.07"
+            android:layout_marginRight="12dp"
+            android:textColor="#ffffffff" />
 
     </LinearLayout>
 

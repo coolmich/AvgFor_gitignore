@@ -14,11 +14,14 @@
     <string name="logout">LOG OUT</string>
     <string name="seats">SEATS</string>
     <string name="help">HELP</string>
-    <string name="feedback">FEEDBACK</string>
+    <string name="feedback">FEED BACK</string>
     <string name="editT1">Username</string>
     <string name="editT2">Password</string>
     <string name="Signup">Sign up</string>
     <string name="Signin">Sign in</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_id">1485863734981240</string>
+    <string name="SigninFB">Signin with FaceBook</string>
+    <string name="avgfor">AvgFor</string>
 
 </resources>
